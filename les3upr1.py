@@ -1,4 +1,4 @@
-file = open("C:\\Users\\Анна\\Desktop\\file1.txt", "rt")
+file = open("C:\\Users\\Анна\\PycharmProjects\\proga\\file1.txt", "rt")
 text = file.readlines()
 text1 = []
 for i in range(len(text)):
