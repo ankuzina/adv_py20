@@ -12,8 +12,8 @@ from gameunit import *
 class Hero(Attacker):
     _health = 100
     _attack = 200
-    _experience = 18
-    _lvl = 1
+    _experience = 0
+    _lvl = 0
     _importance = 2
 
     def __init__(self, name):
