@@ -4,49 +4,62 @@ from enemies import *
 from hero import *
 from random import randint, choice
 
-
+hero = Hero(input())
 def palatka(_lvl):
     print('Добро пожаловать в палатку! Представьтесь!')
-    hero = Hero(input())
     print('Что покупать будем? Введите "health", "attack" или "exit"')  # exit это чтобы выйти, вдруг кириллицу не читает
-    health_price = {50: 10, 100: 20, 200: 40, 500: 100}
-    attack_price = {10: 5, 20: 10, 50: 25, 100: 200}
-    # h_price_new = ...
     pokupka = input()
     if pokupka == 'health':
-        print('Вы можете приобрести 50 (за 10), 100 (20), 200 (40), 500 (за 100)')
-        print(
-            'Внимание! Цены на улучшение характеристики зависят от вида игрока. Есть вы Healer (Hero!!!), то цены делятся на 2. Если Jagernaut - умножаются на 1,15, Wizard - на 1,5, Imba - на 5.')
-        print('Новые цены:')
-        print('Сейчас у вас ', hero._experience, 'очков опыта')
-        print('Что берём?')
-
-        purchase = int(input())
-        if purchase in health_price:
-            if (hero._experience - hero._importance * health_price[purchase]) >= 0:
-                hero._health += purchase
-                hero._experience -= hero._importance * health_price[purchase]
-                print('Теперь у вас ', hero._health, 'здоровья и ', hero._experience, "опыта. До свидания!")
-            else:
-                print("вы нищеброд. сори. прощайте!")
-                # выход
+        purch_health(hero._experience)
     elif pokupka == 'attack':
-        print('Вы можете приобрести 10 (за 5), 20 (10), 50 (25), 100 (за 200)')
-        print('Сейчас у вас ', hero._attack, 'очков аттаки')
-        print('Что берём?')
-        purchase = int(input())
-        if purchase in attack_price:
-            if (hero._experience - hero._importance * attack_price[purchase]) >= 0:
-                hero._attack += purchase
-                hero._experience -= hero._importance * attack_price[purchase]
-                print('Теперь у вас ', hero._attack, 'аттаки и ', hero._experience, "опыта. До свидания!")
-            else:
-                print("вы нищеброд. копите опыт. пока.")
+        purch_attack(hero._experience)
     elif pokupka == 'exit':
         print('Прощайте!')
     else:
         print('непонел')
 
+def purch_attack(xp):
+    attack_price = {10: 5, 20: 10, 50: 25, 100: 200}
+    print('Вы можете приобрести 10 (за 5), 20 (10), 50 (25), 100 (за 200)')
+    #print('Сейчас у вас ', hero._attack, 'очков аттаки')
+    print('Что берём?')
+    purchase = int(input())
+    if purchase in attack_price:
+        if (hero._experience - hero._importance * attack_price[purchase]) >= 0:
+            hero._attack += purchase
+            hero._experience -= hero._importance * attack_price[purchase]
+            print('Теперь у вас ', hero._attack, 'аттаки и ', hero._experience, "опыта. До свидания!")
+        else:
+            print("у вас нет деняк. хотите что-то ещё купить? (health/attack/нет)")
+            ans = input()
+            if ans == 'health':
+                purch_health(hero._experience)
+            elif ans == 'attack':
+                purch_attack(hero._experience)
+            else:
+                print("заходите ещё!")
+
+def purch_health(xp):
+    print('Вы можете приобрести 50 (за 10), 100 (20), 200 (40), 500 (за 100)')
+    health_price = {50: 10, 100: 20, 200: 40, 500: 100}
+    print('Внимание! Цены на улучшение характеристики зависят от вида игрока. Есть вы Healer (Hero!!!), то цены делятся на 2. Если Jagernaut - умножаются на 1,15, Wizard - на 1,5, Imba - на 5.')
+    #print('Сейчас у вас ', hero._experience, 'очков опыта')
+    print('Что берём?')
+    purchase = int(input())
+    if purchase in health_price:
+        if (hero._experience - hero._importance * health_price[purchase]) >= 0:
+            hero._health += purchase
+            hero._experience -= hero._importance * health_price[purchase]
+            print('Теперь у вас ', hero._health, 'здоровья и ', hero._experience, "опыта. До свидания!")
+        else:
+            print("у вас нет деняк. хотите что-то ещё купить? (health/attack/нет)")
+            ans = input()
+            if ans == 'health':
+                purch_health(hero._experience)
+            elif ans == 'attack':
+                purch_attack(hero._experience)
+            else:
+                print("заходите ещё!")
 
 def annoying_input_int(message=''):
     answer = None
@@ -117,8 +130,10 @@ def game_tournament(hero, dragon_list):
         print('Ваш накопленный опыт:', hero._experience)
         print('Ваш текущий уровень:', hero._lvl)
         print('Осталось опыта до следующего уровня:', hero._lvl * 100 - hero._experience)
-        if last_level == (hero._lvl):
+        if last_level < (hero._lvl):
+            print(hero._experience)
             palatka(last_level)
+        start_game()
     else:
         print('К сожалению, Вы проиграли...')
 
@@ -147,7 +162,7 @@ def game_trollnament(hero, troll_list):
         print('Прогресс в опыте:', hero._experience)
         print('Ваш текущий уровень:', hero._lvl)
         print('Осталось опыта до следующего уровня:', hero._lvl * 100 - hero._experience)
-        if last_level == hero._lvl:
+        if last_level < hero._lvl:
             palatka(last_level)
     else:
         print('К сожалению, Вас сожрали...')
@@ -176,7 +191,7 @@ def start_game():
         print('Добро пожаловать в арифметико-ролевую игру с драконами!')
         print('Представьтесь, пожалуйста: ', end='')
         hero = Hero(input())
-        if hero._lvl == 1 or hero._lvl == 2:
+        if hero._lvl == 0 or hero._lvl == 1 or hero._lvl == 2:
             if randint(1, 2) == 1:
                 dragon_number = randint(2, 3)
                 dragon_list = generate_dragon_list(dragon_number)
